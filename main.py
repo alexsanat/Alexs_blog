@@ -13,8 +13,8 @@ from flask_gravatar import Gravatar
 import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URL'] = os.environ.get('DATABASE_URL')
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URL'] = os.environ.get('DATABASE_URL', "sqlite:///blog.db")
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '')
 ckeditor = CKEditor(app)
 Bootstrap(app)
 
@@ -198,7 +198,7 @@ def add_new_post():
     return render_template("make-post.html", form=form, logged_in=current_user.is_authenticated, current_user=current_user)
 
 
-@app.route("/edit-post/<int:post_id>")
+@app.route("/edit-post/<int:post_id>", methods=['GET', 'POST'])
 @admin_only
 def edit_post(post_id):
     post = BlogPost.query.get(post_id)
